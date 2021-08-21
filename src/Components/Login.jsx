@@ -92,7 +92,6 @@ export default function Login() {
 
   }
   return (
-
     <div className='login-container'>
       <div className='imgcar' style={{ backgroundImage: `url(` + Insta + `)`, backgroundSize: 'cover' }}>
         <div className='caro'>

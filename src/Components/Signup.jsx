@@ -6,6 +6,7 @@ import logo from "../logo.png";
 import { Link } from 'react-router-dom';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
+import Alert from '@material-ui/lab/Alert';
 
 const Signup = (props) => {
     const [username, setUsername] = useState("");
@@ -14,6 +15,7 @@ const Signup = (props) => {
     const [message, setMessage] = useState("");
     const [profileImage, setProfileImage] = useState(null);
     const { signUp } = useContext(AuthContext);
+    const [error, setError] = useState("")
     const [flag, setFlag] = useState(true);
 
     let useStyles = makeStyles({
@@ -61,6 +63,13 @@ const Signup = (props) => {
     }
 
     const handleSignUp = async () => {
+        if (profileImage == null) {
+            setError("Please upload your profile Image");
+            setTimeout(() => {
+                setError('')
+            }, 2000)
+            return;
+        }
         try {
             let response = await signUp(email, password);
             console.log(response);
@@ -108,7 +117,7 @@ const Signup = (props) => {
     }
 
     return (
-        <div style={{marginTop: '150px'}}>
+        <div style={{ marginTop: '150px' }}>
 
             <Container>
                 <Grid container justify="center" spacing={2}>
@@ -119,6 +128,7 @@ const Signup = (props) => {
                                 image={logo}
                                 style={{ height: "5rem", backgroundSize: "contain" }}
                             ></CardMedia>
+                            {error && <Alert severity="error">{error}</Alert>}
                             <Typography style={{ textAlign: "center", color: "gray" }}>
                                 Signup to see photos and videos from your friends.
                             </Typography>
@@ -203,49 +213,6 @@ const Signup = (props) => {
                     </Grid>
                 </Grid>
             </Container>
-
-
-
-            {/* <h1>SignUp Page</h1>
-
-            <div>
-                Username
-                <input 
-                value={username}
-                onChange={(e)=>{setUsername(e.target.value);}}
-                 />
-            </div>
-
-            <div>
-                Email
-                <input 
-                value={email}
-                onChange={(e)=>{setEmail(e.target.value);}}
-                 />
-            </div>
-
-            <div>
-                Password             
-                <input 
-                value={password}
-                onChange={(e)=>{setPassword(e.target.value);}}
-                 />
-            </div>
-
-            <div>
-                Profile Image            
-                <input 
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                    handleFileSubmit(e);
-                }}
-                 />
-            </div>
-
-            <button onClick={handleSignUp}>SignUp</button>
-            <h2 style={{color:"red"}}>{message}</h2> */}
-
         </div>
     );
 }

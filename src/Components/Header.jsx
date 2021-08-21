@@ -99,7 +99,9 @@ const Header = (props) => {
 
     const handleProfile = () => {
         //  console.log(currUser)
-        history.push(`/profile/${currUser.uid}`)
+        if(currUser != null){
+            history.push(`/profile/${currUser.uid}`)
+        }
     }
     const handleLogout = async () => {
         await logout();
@@ -132,6 +134,9 @@ const Header = (props) => {
             profilePicUrlOfLiveUser = dataObjOfCurrLiveUser.profileImageUrl;
             console.log(profilePicUrlOfLiveUser);
             setUserPicUrl(profilePicUrlOfLiveUser);
+        }
+        else{
+            setUserPicUrl("");
         }
     }, [currUser])
 
