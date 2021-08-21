@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { firebaseDB, timeStamp } from "../config/firebase";
 import ReactDOM from "react-dom";
-import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import { useHistory } from "react-router-dom";
 import Dialog from '@material-ui/core/Dialog';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -154,6 +154,11 @@ const VideoPost = (props) => {
     const handleClose = () => {
         setOpenId(null);
     };
+    const handleMute = (e) => {
+        e.preventDefault()
+        e.target.muted = !e.target.muted
+    }
+
 
     useEffect(async () => {
         console.log(props);
@@ -193,14 +198,16 @@ const VideoPost = (props) => {
         <Container>
             <Card
                 style={{
-                    // height: "80vh",
+                    height: "83vh",
                     width: "500px",
                     margin: "auto",
                     padding: "10px",
                     marginBottom: "20px",
+                    position: 'relative',
+                    top: '80px',
                 }}
             >
-                <div className='place'></div>
+
                 <span className="ab">
                     <Avatar className="a" variant="span" style={
                         {
@@ -218,59 +225,63 @@ const VideoPost = (props) => {
                         src={props.postObj.videoLink}
                     ></Video>
                 </div>
-                <div>
-                    {isLiked ? (
-                        <Favorite
-                            onClick={() => toggleLikeIcon()}
-                            style={{ color: "red" }}
-                        ></Favorite>
-                    ) : (
-                        <FavoriteBorder onClick={() => toggleLikeIcon()}></FavoriteBorder>
+                <div className="lower-section-post">
+                    <div>
+                        {isLiked ? (
+                            <Favorite
+                                onClick={() => toggleLikeIcon()}
+                                style={{ color: "red" }}
+                            ></Favorite>
+                        ) : (
+                            <FavoriteBorder onClick={() => toggleLikeIcon()}></FavoriteBorder>
+                        )}
+                        <ChatBubbleOutlineIcon onClick={() => handleClickOpen(props.postObj.pid)} className={`${classes.ci} icon-styling`}
+                            style={{
+                                marginLeft: '10px',
+                                color: 'black'
+                            }} />
+                    </div>
+
+                    {likesCount && (
+                        <div>
+                            <Typography variant="p">Liked by {likesCount} others </Typography>
+                        </div>
                     )}
-                    <ChatBubbleIcon onClick={() => handleClickOpen(props.postObj.pid)} className={`${classes.ci} icon-styling`}
+
+                    <TextField
+                        variant="outlined"
+                        label="Add a comment"
+                        size="small"
                         style={{
-                            marginLeft: '5px',
-                            color: 'lightgrey'
-                        }} />
+                            width: '50%',
+                            marginRight: '5px',
+                            marginTop: '5px',
+                        }}
+                        value={comment}
+                        onChange={(e) => {
+                            setComment(e.target.value);
+                        }}
+                    ></TextField>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        style={{
+                            width: '20%',
+                            marginTop: '5px',
+                        }}
+                        onClick={addCommentToCommentList}
+                    >
+                        Post
+                    </Button>
                 </div>
 
-                {likesCount && (
-                    <div>
-                        <Typography variant="p">Liked by {likesCount} others </Typography>
-                    </div>
-                )}
-
-                <TextField
-                    variant="outlined"
-                    label="Add a comment"
-                    size="small"
-                    style={{
-                        width: '50%',
-                        marginRight: '5px',
-                        marginTop: '5px',
-                    }}
-                    value={comment}
-                    onChange={(e) => {
-                        setComment(e.target.value);
-                    }}
-                ></TextField>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    style={{
-                        width: '20%',
-                        marginTop: '5px',
-                    }}
-                    onClick={addCommentToCommentList}
-                >
-                    Post
-                </Button>
+                {/* <div className='place'></div> */}
 
                 <Dialog maxWidth="md" onClose={handleClose} aria-labelledby="customized-dialog-title" open={openId === props.postObj.pid}>
                     <MuiDialogContent>
                         <div className='dcontainer'>
                             <div className='video-part'>
-                                <video autoPlay={true} className='video-styles2' controls id={props.postObj.pid} muted="muted" type="video/mp4" >
+                                <video autoPlay={true} className='video-styles2' onClick={(e) => handleMute(e)} controls id={props.postObj.pid} muted="muted" type="video/mp4" >
                                     <source src={props.postObj.videoLink} type="video/webm" />
                                 </video>
                             </div>
@@ -347,8 +358,6 @@ const VideoPost = (props) => {
                         </div>
                     </MuiDialogContent>
                 </Dialog>
-
-
             </Card>
         </Container>
     );
@@ -356,7 +365,7 @@ const VideoPost = (props) => {
 
 function Video(props) {
     const handleAutoScroll = (e) => {
-        console.log(e);
+        console.log(e.target.parentNode.parentNode.parentNode);
         let next = ReactDOM.findDOMNode(e.target).parentNode.parentNode.parentNode
             .nextSibling;
         console.log(next);
@@ -365,17 +374,19 @@ function Video(props) {
             e.target.muted = "true";
         }
     };
+    const handleMute = (e) => {
+        e.preventDefault()
+        e.target.muted = !e.target.muted
+    };
     return (
         <video
             autoPlay={true} className='video-styles2' controls muted="muted" type="video/mp4"
             style={{
-                height: " 100%",
+                height: "100%",
                 width: "100%",
             }}
             onEnded={handleAutoScroll}
-            onClick={(e) => {
-                console.log(timeStamp());
-            }}
+            onClick={(e) => handleMute(e)}
         >
             <source src={props.src} type="video/mp4"></source>
         </video>
