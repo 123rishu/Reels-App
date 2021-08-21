@@ -174,9 +174,11 @@ const VideoPost = (props) => {
             let commentObj = commentList[i];
             let doc = await firebaseDB.collection("users").doc(commentObj.uid).get();
             let commentUserPic = doc.data().profileImageUrl;
+            let commentUserName = doc.data().username;
             updatedCommentList.push({
                 profilePic: commentUserPic,
                 comment: commentObj.comment,
+                username: commentUserName,
             });
         }
 
@@ -309,8 +311,18 @@ const VideoPost = (props) => {
                                             commentList.map((commentObj) => {
                                                 return (
                                                     <>
-                                                        <Avatar src={commentObj.profilePic}></Avatar>
-                                                        <Typography variant="p">{commentObj.comment}</Typography>
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            flexWrap: 'wrap',
+                                                            marginBottom: '10px',
+                                                            marginLeft: '10px',
+                                                        }}>
+                                                            <Avatar src={commentObj.profilePic} style={{marginRight: '10px'}}></Avatar>
+                                                            <Typography style={{marginRight: '10px', fontWeight: 'bold'}} variant="p">{commentObj?.username}</Typography>
+                                                            <Typography variant="p">{commentObj.comment}</Typography>
+                                                        </div>
+
                                                     </>
                                                 );
                                             })
@@ -322,7 +334,7 @@ const VideoPost = (props) => {
                                     <div className='likes'>
                                         <div>
                                             {isLiked ? (
-                                                <Favorite
+                                                <Favorite   
                                                     onClick={() => toggleLikeIcon()}
                                                     style={{ color: "red" }}
                                                 ></Favorite>
